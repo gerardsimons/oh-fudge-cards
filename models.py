@@ -24,20 +24,7 @@ class Game(object):
         
         self.rounds_played = list()
 
-    def new_round(self):
-        self.player_start_i += 1
-        self.player_start_i = self.player_start_i % len(self.players)
-        game_round = Round(len(self.rounds_played) + 1, self.players, self.player_start_i)
-        self.rounds_played.append(game_round)
-        return game_round
-
-    def finish_round(self):
-        if not self.current_round:
-            raise GameException("Round is not finished")
-        else:
-            self.rounds_played.append(self.game_round)
-
-    def finished(self):
+    def is_finished(self):
         return len(self.rounds_played) >= self.n_rounds
 
 class Round(object):
@@ -61,37 +48,15 @@ class Round(object):
         if self.plays:
             return self.plays[len(self.plays) - 1]
 
-    def next_play(self):
-        
-        for i in range(self.round_nr):
-            last_play = self.last_play()
-            if last_play:
+    # def finish_play(play):
+    #     self.player_start = play.winner
 
-                # Find player start i
-                start_i = 0
-                # winner = last_play.winner
-                for i, player in enumerate(self.players):
-                    if player == last_play.winner:
-                        start_i = i
-                        break
+    #     for i, player in enumerate(self.players):
+    #         if player == play.winner:
+    #             self.player_start_i = i
+    #             break
 
-                print("{} won the last round, so he starts.".format(self.players[start_i]))
-                p = Play(self.trump, self.players, start_i)
-            else:                
-                p = Play(self.trump, self.players, self.player_start_i)
-                self.plays.append(p)
-            yield p
-            # print("Plays exhausted")
-
-    def finish_play(play):
-        self.player_start = play.winner
-
-        for i, player in enumerate(self.players):
-            if player == play.winner:
-                self.player_start_i = i
-                break
-
-        self.past_plays.append(play)
+    #     self.past_plays.append(play)
 
     def record_bid(self, player, bid):
         self.bids[player] = bid
@@ -133,57 +98,6 @@ class Play(object):
         if self.suit is None:
             self.suit = card.suit
 
-    
-
-
-class Player(object):
-
-    def __init__(self, name):
-        self.score = 0
-        self.name = name
-        self.cards = list()
-
-    def __str__(self):
-        return "Player '{}'".format(self.name)
-
-    def request_bid(self): 
-        # A player would need more information than this 
-        # in order to make a sensible bid
-        return 1
-
-    def deal_cards(self, cards):
-        self.cards = cards
-
-    def request_move(self, game):
-
-        # Check which cards match the leading suit
-        if not self.cards:
-            raise ValueError("Player does not have any cards left")
-        return self.cards[0]
-
-    def remove_card(self, card):
-        for i, c in enumerate(self.cards):
-            if c == card:
-                del self.cards[i]
-                return 
-
-        raise ValueError("Player does not hold card")
-
-    def get_cards_suit(self, suit):
-        suit_cards = list()
-        for c in self.cards:
-            if c.suit == suit:
-                suit_cards.append(c)
-
-        return suit_cards
-
-    def has_suit(self, suit):
-        for c in self.cards:
-            if c.suit == suit:
-                return True
-
-        return False
-
 
 class DeckEmptyException(Exception):
     pass
@@ -209,6 +123,8 @@ class Deck(object):
             raise ValueError("Invalid number of cards requested")
         if len(self.cards) == 0:
             raise DeckEmptyException("Deck is empty")
+        if N > len(self.cards):
+            raise ValueError("More cards requested than are present in the deck")
         drawn = [self.cards.pop(random.randrange(len(self.cards))) for _ in range(N)]
         return drawn
 
@@ -221,6 +137,39 @@ class Deck(object):
             string += str(c)
 
         return string
+
+class Player(object):
+
+    def __init__(self, name):
+        self.score = 0
+        self.cards = None
+        self.name = name
+
+    def __str__(self):
+        return "Player '{}'".format(self.name)
+
+    def remove_card(self, card):
+        for i, c in enumerate(self.cards):
+            if c == card:
+                del self.cards[i]
+                return 
+
+        raise ValueError("Player does not hold card")
+
+    def get_cards_suit(self, suit):
+        suit_cards = list()
+        for c in self.cards:
+            if c.suit == suit:
+                suit_cards.append(c)
+
+        return suit_cards
+
+    def has_suit(self, suit):
+        for c in self.cards:
+            if c.suit == suit:
+                return True
+
+
 
 
 class Score(object):
