@@ -22,10 +22,10 @@ class Game(object):
         self.players = players
         self.player_start_i = random.randint(0, len(players) - 1) # Assign first player randomly
         
-        self.rounds_played = list()
+        self.rounds = list()
 
     def is_finished(self):
-        return len(self.rounds_played) >= self.n_rounds
+        return len(self.rounds) >= self.n_rounds
 
     def last_play(self):
         last_round = self.last_round()
@@ -35,11 +35,13 @@ class Game(object):
             return None
 
     def last_round(self):
-        if len(self.rounds_played):
-            return self.rounds_played[len(self.rounds_played) - 1]
+        if len(self.rounds):
+            return self.rounds[len(self.rounds) - 1]
 
     def new_round(self):
-        return Round(len(self.rounds_played) + 1, self.players, self.player_start_i)
+        new_round = Round(len(self.rounds) + 1, self.players, self.player_start_i)
+        self.rounds.append(new_round)
+        return new_round
 
 
 class Round(object):
@@ -63,15 +65,25 @@ class Round(object):
         if self.plays:
             return self.plays[len(self.plays) - 1]
 
-    # def finish_play(play):
-    #     self.player_start = play.winner
+    def new_play(self):
+        last_play = self.last_play()
+        if last_play:
 
-    #     for i, player in enumerate(self.players):
-    #         if player == play.winner:
-    #             self.player_start_i = i
-    #             break
+            # Find last winner index
+            start_i = 0
+            for i, player in enumerate(self.players):
+                if player == last_play.winner:
+                    start_i = i
+                    break
 
-    #     self.past_plays.append(play)
+            play = Play(self.trump, self.players, start_i)
+        else:
+            play = Play(self.trump, self.players, self.player_start_i)
+
+        self.plays.append(play)
+        return play
+            # self.plays.append(p)
+
 
     def record_bid(self, player, bid):
         self.bids[player] = bid

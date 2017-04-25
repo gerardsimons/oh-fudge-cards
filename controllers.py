@@ -41,24 +41,8 @@ class GameController(object):
                 log("{} bids {}".format(player, bid))
 
             for i in range(game_round.round_nr):
-                # play = None
-                last_play = self.game.last_play()
-                if last_play:
-
-                    # Find player start i
-                    start_i = 0
-                    # winner = last_play.winner
-                    for i, player in enumerate(self.players):
-                        if player == last_play.winner:
-                            start_i = i
-                            break
-
-                    print("{} won the last round, so he starts.".format(self.players[start_i]))
-                    play = Play(game_round.trump, self.game.players, start_i)
-                else:
-                    play = Play(game_round.trump, self.game.players, self.game.player_start_i)
-                    # self.plays.append(p)
-
+                
+                play = game_round.new_play()
                 for player in play.next_player():
                     while True:  # Keep requesting moves until valid move is played
                         player_ai = self.player_ais[player]
@@ -72,7 +56,6 @@ class GameController(object):
                             play.record_play(player, card)
                             break
 
-                game_round.plays.append(play) # THIS IS UGLY
                 # Determine winner of play
                 game_logic.determine_play_winner(play)
                 log("Player {} won the play.".format(play.winner))
@@ -82,10 +65,6 @@ class GameController(object):
             # Round finished, update score model
             scores = game_logic.determine_scores(game_round)
             print(scores)
-
-            # return
-
-            # self.display()
 
     def display(self):
         pass
