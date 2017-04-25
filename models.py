@@ -28,8 +28,18 @@ class Game(object):
         return len(self.rounds_played) >= self.n_rounds
 
     def last_play(self):
+        last_round = self.last_round()
+        if last_round:
+            return last_round.last_play()
+        else:
+            return None
+
+    def last_round(self):
         if len(self.rounds_played):
-            return self.rounds_played[len(self.rounds_played) - 1].last_play()
+            return self.rounds_played[len(self.rounds_played) - 1]
+
+    def new_round(self):
+        return Round(len(self.rounds_played) + 1, self.players, self.player_start_i)
 
 
 class Round(object):
