@@ -1,4 +1,5 @@
-import constants
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-import constants
 from models import Card
 
 EMOJI_DICT = {

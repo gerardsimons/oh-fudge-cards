@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 SUITS = ['H','D','C','S']
 # SUITS = ["❤","♦","♣","♠"]
 # SUITS = ["❤","♦","C","D"]

@@ -18,6 +18,14 @@ def determine_scores(game_round):
 
     return player_scores
 
+def is_valid_play(player, play, card):
+    if play.suit is None or play.suit == card.suit:
+        return True
+    elif not player.has_suit(play.suit):
+        return True
+        
+    return False
+
 def card_value(play, card):
     value = 1
     if card.suit == play.trump.suit:

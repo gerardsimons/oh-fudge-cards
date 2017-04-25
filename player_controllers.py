@@ -3,9 +3,6 @@ class SimpleAIPlayer(object):
     def __init__(self, player):
         self.player = player
 
-    # def __str__(self):
-    #     return "Player '{}'".format(self.name)
-
     def request_bid(self): 
         # A player would need more information than this 
         # in order to make a sensible bid

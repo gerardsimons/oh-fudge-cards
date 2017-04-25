@@ -27,6 +27,11 @@ class Game(object):
     def is_finished(self):
         return len(self.rounds_played) >= self.n_rounds
 
+    def last_play(self):
+        if len(self.rounds_played):
+            return self.rounds_played[len(self.rounds_played) - 1].last_play()
+
+
 class Round(object):
 
     def __init__(self, round_nr, players, player_start_i):
