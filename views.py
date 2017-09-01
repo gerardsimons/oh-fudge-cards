@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-import constants
-from models import Card
+from cardsource import Card
 
 EMOJI_DICT = {
-    "H":"❤️",
-    "D":"♦️",
-    "C":"♣",
-    "S":"♠"
+    "h":"❤️",
+    "d":"♦️",
+    "c":"♣",
+    "s":"♠"
 }
 
 class EmojiCardView(object):
 
     def __init__(self, card):
-        self.value = str(card.symbol) + EMOJI_DICT[card.suit]
+        self.value = str(card.rank) + EMOJI_DICT[card.suit]
         # self.emoji = 
 
     def __str__(self):

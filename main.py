@@ -1,9 +1,6 @@
-from models import Card, Deck, Round, Player, Game
-from views import EmojiCardView, TextGameView
+
 from controllers import GameController
 
-import game_logic
-import constants
 
 def automated_game():
     ge = GameController()

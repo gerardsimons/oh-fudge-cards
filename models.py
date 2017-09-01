@@ -1,20 +1,44 @@
 import random
 import constants
 
-class Card(object):
+from cardsource import Card, Hand, Deck
 
-    def __init__(self, symbol, suit):
-        self.symbol = symbol
-        self.suit = suit
 
-    def __str__(self):
-        return "{}{}".format(self.symbol, self.suit)
+class FudgeCard(object):
+    RANKS = Card.RANKS.replace('X', '')  # no jokers in blackjack
+    VALUES = {
+        '2': 2,
+        '3': 3,
+        '4': 4,
+        '5': 5,
+        '6': 6,
+        '7': 7,
+        '8': 8,
+        '9': 9,
+        'T': 10,
+        'J': 10,
+        'Q': 10,
+        'K': 10,
+        'A': 11
+    }
+
+    def __int__(self):
+        return self.VALUES[self.rank]
+
+    def __eq__(self, other):
+        """
+        Checks if 2 cards have the same rank
+        """
+        if not isinstance(other, FudgeCard):
+            other = FudgeCard(other)
+
+        return self.VALUES[self.rank] == self.VALUES[other.rank]
 
 
 class GameException(Exception):
     pass
 
-class Game(object):
+class FudgeGame(object):
     
     def __init__(self, players, n_rounds):
         self.n_rounds = n_rounds
@@ -49,8 +73,9 @@ class Round(object):
     def __init__(self, round_nr, players, player_start_i):
         self.round_nr = round_nr
 
-        self.deck = Deck.gen_full_deck() # Recreate the deck
-        self.trump = self.deck.draw_card()
+        self.deck = FudgeDeck()
+        self.deck.shuffle()
+        self.trump = self.deck.pop()
         self.players = players
         self.player_start_i = player_start_i
 
@@ -107,7 +132,7 @@ class Play(object):
         for player in self.players:
             yield player
 
-    def is_complete():
+    def is_complete(self):
         for player in self.players:
             if player not in self.plays:
                 return False
@@ -125,39 +150,6 @@ class Play(object):
         if self.suit is None:
             self.suit = card.suit
 
-
-class DeckEmptyException(Exception):
-    pass
-
-class Deck(object):
-
-    def __init__(self, cards):
-        self.cards = cards
-
-    @classmethod
-    def gen_full_deck(cls):
-        cards = list()
-        for suit in constants.SUITS:
-            for symbol in constants.SYMBOLS:
-                # print(suit)
-                c = Card(symbol, suit)
-                cards.append(c)
-
-        return Deck(cards)
-
-    def draw_cards(self, N):
-        if N < 1:
-            raise ValueError("Invalid number of cards requested")
-        if len(self.cards) == 0:
-            raise DeckEmptyException("Deck is empty")
-        if N > len(self.cards):
-            raise ValueError("More cards requested than are present in the deck")
-        drawn = [self.cards.pop(random.randrange(len(self.cards))) for _ in range(N)]
-        return drawn
-
-    def draw_card(self):
-        return self.draw_cards(1)[0]
-
     def __str__(self):
         string = ""
         for c in self.cards:
@@ -169,19 +161,15 @@ class Player(object):
 
     def __init__(self, name):
         self.score = 0
-        self.cards = None
+        self.hand = FudgeHand()
         self.name = name
 
     def __str__(self):
         return "Player '{}'".format(self.name)
 
     def remove_card(self, card):
-        for i, c in enumerate(self.cards):
-            if c == card:
-                del self.cards[i]
-                return 
-
-        raise ValueError("Player does not hold card")
+        # print("Remove card ...")
+        self.hand.take_card(card)
 
     def get_cards_suit(self, suit):
         suit_cards = list()
@@ -192,11 +180,10 @@ class Player(object):
         return suit_cards
 
     def has_suit(self, suit):
-        for c in self.cards:
-            if c.suit == suit:
-                return True
+        return self.hand.has_suit(suit)
 
-
+    def give_card(self, card):
+        self.hand.append(card)
 
 
 class Score(object):
@@ -211,8 +198,50 @@ class Score(object):
         self.scores[player] += points
 
     def __str__(self):
-        string = "PLAYER SCORES:\n"
+        # string = "PLAYER SCORES:\n"
+        string = "---------------------------\n"
         for p, score in self.scores.items():
             string += "\t{} : {}\n".format(p, score)
-
+        string += "---------------------------\n"
         return string
+
+    def __add__(self, x):
+        for i, k in self.scores.items():
+            try:
+                self.scores[i] += x.scores[i]
+            except IndexError as e:
+                raise ValueError("Other score does not contain player {}".format(i))
+        return self
+
+class FudgeDeck(Deck):
+
+    def draw_cards(self, index):
+        if index < 1 or index > len(self):
+            raise ValueError("Invalid number of cards to draw")
+        hand = FudgeHand()
+
+        for _ in range(index):
+            hand.append(self.pop())
+
+        return hand
+
+class FudgeHand(Hand):
+
+    def __init__(self, cards=[]):
+        self._cards = cards
+
+    def has_suit(self, suit):
+
+        for c in self._cards:
+            if c.suit == suit:
+                return True
+
+        return False
+
+    def take_card(self, card):
+        for i, c in enumerate(self._cards):
+            if c == card:
+                del self._cards[i]
+                return
+
+        raise ValueError("No such card in this hand")

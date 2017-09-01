@@ -1,4 +1,4 @@
-from models import Player, Card, Game, Round, Play, GameException
+from models import Player, Card, FudgeGame, Round, Play, GameException, FudgeHand, Score
 from logging import log, log_play
 from player_controllers import SimpleAIPlayer
 
@@ -7,7 +7,7 @@ import game_logic
 
 class GameController(object):
     def finish_round(self):
-        if not self.current_round:
+        if not self.game_round:
             raise GameException("Round is not finished")
         else:
             self.rounds_hist.append(self.game_round)
@@ -25,14 +25,17 @@ class GameController(object):
 
             self.player_ais[player] = player_ctrl
 
-        self.game = Game(self.player_ais.keys(), nr_rounds)
+        self.game = FudgeGame(list(self.player_ais.keys()), nr_rounds)
+        final_score = Score(self.game.players)
+
         while not self.game.is_finished():
             game_round = self.game.new_round()
             log("New round started! Trump card is {}".format(game_round.trump))
 
             # Deal cards to players
             for player, player_ctrl in self.player_ais.items():
-                player.cards = game_round.deck.draw_cards(game_round.round_nr)
+
+                player.hand = game_round.deck.draw_cards(game_round.round_nr)
 
                 # Ask the player controllers for moves
                 bid = player_ctrl.request_bid()
@@ -47,6 +50,7 @@ class GameController(object):
                     while True:  # Keep requesting moves until valid move is played
                         player_ai = self.player_ais[player]
                         card = player_ai.request_move(self.game)  # Request move from player
+                        # print("Player wants to play " + str(card))
                         if game_logic.is_valid_play(player, play, card):
                             log_play(player, card)
 
@@ -64,7 +68,13 @@ class GameController(object):
 
             # Round finished, update score model
             scores = game_logic.determine_scores(game_round)
+            print("ROUND SCORES")
             print(scores)
+
+            final_score += scores
+
+        print("FINAL SCORE : ")
+        print(final_score)
 
     def display(self):
         pass

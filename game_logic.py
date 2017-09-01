@@ -2,7 +2,7 @@ import constants
 
 from collections import defaultdict
 
-from models import Card, Deck, Round, Player, Game, Score
+from models import Score
 
 def determine_scores(game_round):
 
@@ -27,18 +27,21 @@ def is_valid_play(player, play, card):
     return False
 
 def card_value(play, card):
-    value = 1
-    if card.suit == play.trump.suit:
+    value = int(card)
+    if card.suit == play.trump.suit: # If it's trump it should be higher than any other non trump card
         value += len(constants.SYMBOLS)
-    elif card.suit != play.suit:
+        return value
+    elif card.suit != play.suit: # If the card is not even the current suit, it's worthless
         return 0
+    else:
+        return value
 
-    for i, s in enumerate(constants.SYMBOLS):
-        if s == card.symbol:
-            value += i
-            break
-
-    return value
+    # for i, s in enumerate(constants.SYMBOLS):
+    #     if s == card.rank:
+    #         value += i
+    #         break
+    #
+    # return value
 
 def determine_play_winner(play):
     max_card_value = 0
