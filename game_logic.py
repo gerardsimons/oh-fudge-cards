@@ -28,30 +28,37 @@ def is_valid_play(player, play, card):
 
 def card_value(play, card):
     value = int(card)
+
+    # print("Card suit = {}".format(card.suit))
+    # print("Play suit = {}".format(play.suit))
+
     if card.suit == play.trump.suit: # If it's trump it should be higher than any other non trump card
         value += len(constants.SYMBOLS)
         return value
-    elif card.suit != play.suit: # If the card is not even the current suit, it's worthless
+    elif card.suit != play.suit and play.suit is not None: # If the card is not even the current suit, it's worthless
         return 0
-    else:
+    else: # Otherwise just return the default value
         return value
 
-    # for i, s in enumerate(constants.SYMBOLS):
-    #     if s == card.rank:
-    #         value += i
-    #         break
-    #
-    # return value
+
 
 def determine_play_winner(play):
+    '''
+    Assumes card values have been computed!
+    :param play: The play for which to assess the card values depending on the play's trump and the cards played by the players.
+    :return:
+    '''
     max_card_value = 0
     winner = None
     for player, card in play.plays.items():
-        card_val = card_value(play, card)
-        print("{} card {} has value {}".format(player, card, card_val))
-        if card_val > max_card_value:
+        # card_val = card_value(play, card)
+        print("{} card {} has value {}".format(player, card, card.value))
+        if card.value > max_card_value:
             # print(max_card_value)
-            max_card_value = card_val
+            max_card_value = card.value
             winner = player
+
+    assert winner is not None
+
     play.winner = winner
     return winner

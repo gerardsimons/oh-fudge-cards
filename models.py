@@ -1,10 +1,12 @@
 import random
+from collections import deque
+
 import constants
 
 from cardsource import Card, Hand, Deck
 
 
-class FudgeCard(object):
+class FudgeCard(Card):
     RANKS = Card.RANKS.replace('X', '')  # no jokers in blackjack
     VALUES = {
         '2': 2,
@@ -22,6 +24,10 @@ class FudgeCard(object):
         'A': 11
     }
 
+    def __init__(self, rank, suit):
+        self.rank = rank
+        self.suit = suit
+
     def __int__(self):
         return self.VALUES[self.rank]
 
@@ -32,7 +38,14 @@ class FudgeCard(object):
         if not isinstance(other, FudgeCard):
             other = FudgeCard(other)
 
-        return self.VALUES[self.rank] == self.VALUES[other.rank]
+        return self.suit == other.suit and self.rank == other.rank
+
+    def repr_json(self):
+        # return dict(rank=self.rank, suit=self.suit)
+        if hasattr(self, 'value'):
+            return dict(card="{}{}".format(self.rank, self.suit), value=self.value)
+        else:
+            return dict(card="{}{}".format(self.rank, self.suit))
 
 
 class GameException(Exception):
@@ -66,6 +79,12 @@ class FudgeGame(object):
         new_round = Round(len(self.rounds) + 1, self.players, self.player_start_i)
         self.rounds.append(new_round)
         return new_round
+
+    def repr_json(self):
+        return dict(n_rounds=self.n_rounds,
+                    players=self.players,
+                    rounds=self.rounds
+        )
 
 
 class Round(object):
@@ -109,10 +128,20 @@ class Round(object):
         return play
             # self.plays.append(p)
 
-
     def record_bid(self, player, bid):
         self.bids[player] = bid
 
+    def repr_json(self):
+
+        bids = dict()
+        for k,v in self.bids.items():
+            bids[k.name] = v
+
+        return dict(trump=self.trump,
+                    round_nr=self.round_nr,
+                    bids=bids,
+                    plays=self.plays
+                    )
 
 
 class Play(object):
@@ -133,6 +162,7 @@ class Play(object):
             yield player
 
     def is_complete(self):
+        # Check that everybody played a card
         for player in self.players:
             if player not in self.plays:
                 return False
@@ -156,6 +186,18 @@ class Play(object):
             string += str(c)
 
         return string
+
+    def repr_json(self):
+
+        plays = dict()
+        for k, v in self.plays.items():
+            plays[k.name] = v
+
+        return dict(
+                    suit=self.suit,
+                    winner=self.winner.name,
+                    plays=plays
+                    )
 
 class Player(object):
 
@@ -185,6 +227,9 @@ class Player(object):
     def give_card(self, card):
         self.hand.append(card)
 
+    def repr_json(self):
+        return dict(name=self.name, score=self.score)
+
 
 class Score(object):
 
@@ -213,21 +258,48 @@ class Score(object):
                 raise ValueError("Other score does not contain player {}".format(i))
         return self
 
+    def keys(self):
+        return self.scores.keys()
+
+    def items(self):
+        return self.scores.items()
+
+    def values(self):
+        return self.scores.values()
+
 class FudgeDeck(Deck):
 
-    def draw_cards(self, index):
-        if index < 1 or index > len(self):
-            raise ValueError("Invalid number of cards to draw")
-        hand = FudgeHand()
+    def __init__(self):
+        # Make sure to generate FudgeCard objects, not regular Card objects
+        self._cards = deque([FudgeCard(rank, suit)
+                             for rank in Card.RANKS for suit in Card.SUITS
+                             if rank != 'X'])
 
-        for _ in range(index):
-            hand.append(self.pop())
+    def draw_cards(self, nr_cards):
+        if nr_cards < 1 or nr_cards > len(self):
+            raise ValueError("Invalid number of cards to draw")
+
+        hand = FudgeHand()
+        for _ in range(nr_cards):
+            card = self.pop()
+            print("Drew card {} from deck.".format(card))
+            hand.append(card)
+
+        # print(hand)
+
+        # for i, c in enumerate(hand):
+        #     print(c)
+        #     for j, c_2 in enumerate(hand):
+        #         if i != j:
+        #             print(c_2)
+        #             assert c != c_2
 
         return hand
 
 class FudgeHand(Hand):
 
     def __init__(self, cards=[]):
+        super().__init__()
         self._cards = cards
 
     def has_suit(self, suit):
