@@ -285,22 +285,19 @@ class FudgeDeck(Deck):
             card = self.pop()
             hand.append(card)
 
-        # print(hand)
-
-        # for i, c in enumerate(hand):
-        #     print(c)
-        #     for j, c_2 in enumerate(hand):
-        #         if i != j:
-        #             print(c_2)
-        #             assert c != c_2
+        for i, c in enumerate(hand):
+            for j, c_2 in enumerate(hand):
+                if i != j:
+                    assert c != c_2
+        assert len(hand) == nr_cards
 
         return hand
 
 class FudgeHand(Hand):
 
-    def __init__(self, cards=[]):
-        super().__init__()
-        self._cards = cards
+    def __init__(self):
+        # super().__init__()
+        self._cards = list()
 
     def has_suit(self, suit):
 

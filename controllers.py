@@ -45,9 +45,12 @@ class GameController(object):
 
             # Deal cards to players
             for player_contr in self.player_controllers:
-                
                 player = player_contr.player
+                print("cards_pp=", cards_pp)
+                print("")
+                # assert len(player.hand) == 0
                 player.hand = game_round.deck.draw_cards(cards_pp)
+
 
                 # Ask the player controllers for moves
                 bid = player_contr.request_bid()
