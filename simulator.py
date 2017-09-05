@@ -7,7 +7,7 @@ import time
 from controllers import GameController
 from encoders import ComplexJSONEncoder
 from models import Player
-from player_controllers import SimpleAIPlayer
+from player_controllers import FullyRandomPlayer
 
 
 @click.command()
@@ -20,7 +20,7 @@ def automated_game(output, rounds, games):
 
         players = list()
         for i in range(4):
-            player_ctrl = SimpleAIPlayer(Player("player_" + str(i)))
+            player_ctrl = FullyRandomPlayer(Player("player_" + str(i)))
             players.append(player_ctrl)
 
         ge = GameController(players, nr_rounds=rounds)
@@ -28,10 +28,7 @@ def automated_game(output, rounds, games):
 
         time_stamp = str(int(time.time() * 1000)) # Millisecond accuracy I think
         new_file = open(os.path.join(output, 'game_{}.json'.format(time_stamp)), mode='w')
-        json.dump(ge.game.repr_json(), new_file, cls=ComplexJSONEncoder, indent=4)
-
-
-
+        json.dump(ge.repr_json(), new_file, cls=ComplexJSONEncoder, indent=4)
 
 if __name__ == '__main__':
     automated_game()

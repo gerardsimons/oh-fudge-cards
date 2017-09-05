@@ -1,0 +1,213 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#", 
+  "definitions": {}, 
+  "id": "http://example.com/example.json", 
+  "properties": {
+    "n_rounds": {
+      "default": 2, 
+      "description": "An explanation about the purpose of this instance.", 
+      "id": "/properties/n_rounds", 
+      "title": "The n_rounds schema", 
+      "type": "integer"
+    }, 
+    "players": {
+      "id": "/properties/players", 
+      "items": {
+        "id": "/properties/players/items", 
+        "properties": {
+          "name": {
+            "default": "player_0", 
+            "description": "An explanation about the purpose of this instance.", 
+            "id": "/properties/players/items/properties/name", 
+            "title": "The name schema", 
+            "type": "string"
+          }, 
+          "score": {
+            "default": 11, 
+            "description": "An explanation about the purpose of this instance.", 
+            "id": "/properties/players/items/properties/score", 
+            "title": "The score schema", 
+            "type": "integer"
+          }
+        }, 
+        "type": "object"
+      }, 
+      "type": "array"
+    }, 
+    "rounds": {
+      "id": "/properties/rounds", 
+      "items": {
+        "id": "/properties/rounds/items", 
+        "properties": {
+          "bids": {
+            "id": "/properties/rounds/items/properties/bids", 
+            "properties": {
+              "player_0": {
+                "default": 1, 
+                "description": "An explanation about the purpose of this instance.", 
+                "id": "/properties/rounds/items/properties/bids/properties/player_0", 
+                "title": "The player_0 schema", 
+                "type": "integer"
+              }, 
+              "player_1": {
+                "default": 1, 
+                "description": "An explanation about the purpose of this instance.", 
+                "id": "/properties/rounds/items/properties/bids/properties/player_1", 
+                "title": "The player_1 schema", 
+                "type": "integer"
+              }, 
+              "player_2": {
+                "default": 1, 
+                "description": "An explanation about the purpose of this instance.", 
+                "id": "/properties/rounds/items/properties/bids/properties/player_2", 
+                "title": "The player_2 schema", 
+                "type": "integer"
+              }, 
+              "player_3": {
+                "default": 1, 
+                "description": "An explanation about the purpose of this instance.", 
+                "id": "/properties/rounds/items/properties/bids/properties/player_3", 
+                "title": "The player_3 schema", 
+                "type": "integer"
+              }
+            }, 
+            "type": "object"
+          }, 
+          "plays": {
+            "id": "/properties/rounds/items/properties/plays", 
+            "items": {
+              "id": "/properties/rounds/items/properties/plays/items", 
+              "properties": {
+                "plays": {
+                  "id": "/properties/rounds/items/properties/plays/items/properties/plays", 
+                  "properties": {
+                    "player_0": {
+                      "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_0", 
+                      "properties": {
+                        "card": {
+                          "default": "6h", 
+                          "description": "An explanation about the purpose of this instance.", 
+                          "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_0/properties/card", 
+                          "title": "The card schema", 
+                          "type": "string"
+                        }, 
+                        "value": {
+                          "default": 6, 
+                          "description": "An explanation about the purpose of this instance.", 
+                          "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_0/properties/value", 
+                          "title": "The value schema", 
+                          "type": "integer"
+                        }
+                      }, 
+                      "type": "object"
+                    }, 
+                    "player_1": {
+                      "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_1", 
+                      "properties": {
+                        "card": {
+                          "default": "6h", 
+                          "description": "An explanation about the purpose of this instance.", 
+                          "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_1/properties/card", 
+                          "title": "The card schema", 
+                          "type": "string"
+                        }, 
+                        "value": {
+                          "default": 6, 
+                          "description": "An explanation about the purpose of this instance.", 
+                          "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_1/properties/value", 
+                          "title": "The value schema", 
+                          "type": "integer"
+                        }
+                      }, 
+                      "type": "object"
+                    }, 
+                    "player_2": {
+                      "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_2", 
+                      "properties": {
+                        "card": {
+                          "default": "2c", 
+                          "description": "An explanation about the purpose of this instance.", 
+                          "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_2/properties/card", 
+                          "title": "The card schema", 
+                          "type": "string"
+                        }, 
+                        "value": {
+                          "default": 0, 
+                          "description": "An explanation about the purpose of this instance.", 
+                          "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_2/properties/value", 
+                          "title": "The value schema", 
+                          "type": "integer"
+                        }
+                      }, 
+                      "type": "object"
+                    }, 
+                    "player_3": {
+                      "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_3", 
+                      "properties": {
+                        "card": {
+                          "default": "4d", 
+                          "description": "An explanation about the purpose of this instance.", 
+                          "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_3/properties/card", 
+                          "title": "The card schema", 
+                          "type": "string"
+                        }, 
+                        "value": {
+                          "default": 0, 
+                          "description": "An explanation about the purpose of this instance.", 
+                          "id": "/properties/rounds/items/properties/plays/items/properties/plays/properties/player_3/properties/value", 
+                          "title": "The value schema", 
+                          "type": "integer"
+                        }
+                      }, 
+                      "type": "object"
+                    }
+                  }, 
+                  "type": "object"
+                }, 
+                "suit": {
+                  "default": "h", 
+                  "description": "An explanation about the purpose of this instance.", 
+                  "id": "/properties/rounds/items/properties/plays/items/properties/suit", 
+                  "title": "The suit schema", 
+                  "type": "string"
+                }, 
+                "winner": {
+                  "default": "player_0", 
+                  "description": "An explanation about the purpose of this instance.", 
+                  "id": "/properties/rounds/items/properties/plays/items/properties/winner", 
+                  "title": "The winner schema", 
+                  "type": "string"
+                }
+              }, 
+              "type": "object"
+            }, 
+            "type": "array"
+          }, 
+          "round_nr": {
+            "default": 1, 
+            "description": "An explanation about the purpose of this instance.", 
+            "id": "/properties/rounds/items/properties/round_nr", 
+            "title": "The round_nr schema", 
+            "type": "integer"
+          }, 
+          "trump": {
+            "id": "/properties/rounds/items/properties/trump", 
+            "properties": {
+              "card": {
+                "default": "8s", 
+                "description": "An explanation about the purpose of this instance.", 
+                "id": "/properties/rounds/items/properties/trump/properties/card", 
+                "title": "The card schema", 
+                "type": "string"
+              }
+            }, 
+            "type": "object"
+          }
+        }, 
+        "type": "object"
+      }, 
+      "type": "array"
+    }
+  }, 
+  "type": "object"
+}

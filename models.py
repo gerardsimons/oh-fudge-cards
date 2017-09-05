@@ -76,13 +76,14 @@ class FudgeGame(object):
             return self.rounds[len(self.rounds) - 1]
 
     def new_round(self):
-        new_round = Round(len(self.rounds) + 1, self.players, self.player_start_i)
+        round_nr = len(self.rounds) + 1
+        new_round = Round(round_nr, self.players, self.player_start_i)
         self.rounds.append(new_round)
         return new_round
 
     def repr_json(self):
         return dict(n_rounds=self.n_rounds,
-                    players=self.players,
+                    # players=self.players,
                     rounds=self.rounds
         )
 
@@ -282,7 +283,6 @@ class FudgeDeck(Deck):
         hand = FudgeHand()
         for _ in range(nr_cards):
             card = self.pop()
-            print("Drew card {} from deck.".format(card))
             hand.append(card)
 
         # print(hand)

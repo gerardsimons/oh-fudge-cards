@@ -51,10 +51,7 @@ def determine_play_winner(play):
     max_card_value = 0
     winner = None
     for player, card in play.plays.items():
-        # card_val = card_value(play, card)
-        print("{} card {} has value {}".format(player, card, card.value))
         if card.value > max_card_value:
-            # print(max_card_value)
             max_card_value = card.value
             winner = player
 

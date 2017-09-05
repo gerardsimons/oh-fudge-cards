@@ -1,7 +1,7 @@
 import random
 
 
-class SimpleAIPlayer(object):
+class FullyRandomPlayer(object):
 
     def __init__(self, player):
         self.player = player
@@ -21,4 +21,5 @@ class SimpleAIPlayer(object):
             raise ValueError("Player does not have any cards left")
         return random.sample(self.player.hand._cards, 1)[0]
     
-        # return False
+    def repr_json(self):
+        return dict(name=self.player.name, type_name=type(self).__name__)
